@@ -4,8 +4,6 @@
        _hostEnvironment = hostEnvironment;
    }
 
-
-
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -73,5 +71,6 @@
 
         return Ok("Success");
     }
+
 
 
