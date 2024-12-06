@@ -39,3 +39,39 @@
 
         return RedirectToAction(nameof(Index)).WithSuccess("Slider image has been deleted.", null);
     }
+
+
+     [HttpPost]
+    public async Task<IActionResult> DeleteSelected(List<int> leadIds)
+    {
+
+        var leadsToDelete = await _context.SliderImages
+        .Where(lead => leadIds.Contains(lead.Id))
+        .ToListAsync();
+
+        foreach (var lead in leadsToDelete)
+        {
+            // File paths for images
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "uploads/slider", lead.Image);
+            var mobileImagePath = Path.Combine(_hostEnvironment.WebRootPath, "uploads/slider", lead.MobileImage);
+
+            // Check and delete image file
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+
+            // Check and delete mobile image file
+            if (System.IO.File.Exists(mobileImagePath))
+            {
+                System.IO.File.Delete(mobileImagePath);
+            }
+        }
+
+        _context.SliderImages.RemoveRange(leadsToDelete);
+        await _context.SaveChangesAsync();
+
+        return Ok("Success");
+    }
+
+
